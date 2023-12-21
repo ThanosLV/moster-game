@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 
 int main()
 {
-	
+
     int health = 100;
     int monsters_defeated = 0;
 
@@ -19,8 +22,8 @@ int main()
    
     while (health > 0) {
     	srand(time(NULL));
-    	//printf("%s ",monster_type[c_monster]); 
-    
+    	
+        //dialog(); this is hoy we call the dialo function
         printf("You are in a dark dungeon. You see a %s in front of you. What do you do?\n",monster_type[curr_monst_type]);
         printf("Your health is currently at %d.\n", health);
         printf("1. Fight\n");
@@ -33,18 +36,23 @@ int main()
 
         if (choice == 1) {// player attacks
             printf("You attack the monster with your sword!\n");
+        
             int damage = rand() % 20;
             monster_health -= min(monster_health,damage);
             
             printf("You dealt %d damage to the monster! %d health remaining!\n", damage,monster_health);
             int monster_dmg = rand() % 20;
-            health= health - monster_dmg;
-            printf("The monster did %d damage to you!\n",monster_dmg);
+            if (monster_health <= 0){
+            	health = health;
+			}
+			else{
+				 health= health - monster_dmg;
+				 printf("The monster did %d damage to you!\n",monster_dmg);
+			}
+           
         } else if (choice == 2) {//player runs generate new monster
             printf("You run away from the monster.\n");
-            
             curr_monst_type=monster_genarate(monsters);
-
             monster_health = monster_hp[curr_monst_type];//generate new monster
         }  else {
             printf("Invalid choice.\n");
@@ -82,3 +90,17 @@ int min(int num1, int num2)
     return (num1 > num2 ) ? num2 : num1;
 }
 
+void dialog(int text) //function that makes the letter of a word appear one after another
+{   
+    char out_text[] = "you are all alone"; //input the dialog we want to show between the " "
+  //  ---------------------
+    int i;
+    printf("\n");
+    for(i; i < 20; i++)  // i < 20 we set how many characters they will appear. C is very old and bad so we need to count every time 
+    {
+        printf("%c",out_text[i]);
+        Sleep(50); //delay for 50 milisec
+    }
+    printf("\n");
+    // we can you swich and have every dialog in a different case
+}
