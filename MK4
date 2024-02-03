@@ -7,14 +7,14 @@
 int damage, max_dmg=10, min_dmg=0; 
 int health = 100;
 int exp_cap = 5;
-int exp =0;
+int xp =0;
 
 
 void levelup(){
      max_dmg = max_dmg +5;
      min_dmg = min_dmg +5;
      health = health +10;
-     exp = 0;
+     xp = 0;
      exp_cap = exp_cap +5;
 }
 
@@ -72,11 +72,11 @@ int main()
         }
         if (monster_health <= 0){
 			monsters_defeated++;
-            exp = exp + monster_exp[curr_monst_type];
+            xp = xp + monster_exp[curr_monst_type];
             printf("You Killed the Monster!\n");
             printf("You gained %d XP!\n",monster_exp[curr_monst_type]);
             
-            if(exp == exp_cap){
+            if(xp == exp_cap){
                    printf("You Leveled Up!\n");
                    printf("damage +5 and Heath +10\n");
                    levelup();
