@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int damage, max_dmg=10, min_dmg=0; 
+int health = 100;
+int exp_cap = 5;
+int xp =0, lvl=1;
+char start;
+
+
+ // returns a monster from array
+int monster_genarate(int difficulty/* auto einai parametros*/){
+	 srand(time(NULL)); //seed gia kaluter random
+     return rand()%difficulty;//random number generation 
+}
+
+void levelup()
+{
+     lvl++;
+     max_dmg = max_dmg +5;
+     min_dmg = min_dmg +5;
+     health = health +10;
+     xp = 0;
+     exp_cap = exp_cap +5;
+}
+
+void stats()
+{
+     printf("___________________________________\n");
+     printf("Level %d\n",lvl);
+     printf("Max Health:  %d\n",health);
+     printf("Range of Damage:  Max: %d, Min: %d\n",max_dmg,min_dmg);
+     printf("___________________________________\n");
+}
+     
+ //function that makes the letter of a word appear one after another
+void dialog(char out_text[])
+{        
+    int i;
+    printf("\n");
+    for(i; out_text[i]!='\0'; i++) 
+    {
+        printf("%c",out_text[i]);
+        sleep(100);
+    }
+    printf("\n");
+}
+
+ //Find minimum between two numbers. 
+int min(int num1, int num2) 
+{
+    return (num1 > num2 ) ? num2 : num1;
+}
+
+int main()
+{   
+    //start screen
+	puts("\n     **Dungeons & Monsters**     \n");
+	puts("Press enter to start");
+	scanf("%[^\n]", &start);
+    system("CLS");
+     
+    int monsters_defeated = 0;
+    int curr_health = health; 
+    
+   //seting the different types of monsters and the first monster
+   	char monster_type[][25] = { "Small Monster(10hp)", "Medium Monster(25hp)", "Large Monster(50hp)"};
+    int monster_hp[]={10,25,50};
+    int monster_dmg[]={5,15,30};
+    int monster_exp[]={1,5,10};
+
+
+    int monsters =  sizeof(monster_hp) / sizeof(monster_hp[0]); //For reading the corrent amount of subjects in the array
+	int curr_monst_type=monster_genarate(1);// first time only small monster
+	int monster_health= monster_hp[curr_monst_type];//edw setarw to monster hp analoga to monster pali mono mia fora
+    
+    dialog("You are in a dark dangeon.");    
+    sleep(1000);
+     
+    while (curr_health > 0) {
+    	srand(time(NULL));
+    	
+        printf("\nYou see a %s in front of you. What do you do?\n",monster_type[curr_monst_type]);
+        printf("Your health is currently at %d.\n", curr_health);
+        printf("1. Fight\n");
+        printf("2. Run\n");
+        printf("3. Check Stats\n");
+
+        int choice;
+        scanf("%d", &choice);
+        system("CLS"); //clears the previous outpouts
+        printf("\n");
+        
+        if (choice == 1) {// player attacks
+            printf("You attack the monster with your sword!\n");
+            damage = rand() % (max_dmg +1  -min_dmg)+min_dmg; //rand() % (max_num +1 -min_mun)+min_num
+            monster_health -= min(monster_health,damage);      
+            printf("You dealt %d damage to the monster! %d health remaining!\n", damage,monster_health);
+            int monster_damage= monster_dmg[curr_monst_type];
+            if (monster_health > 0){
+                curr_health= curr_health - monster_damage;
+			    printf("The monster did %d damage to you!\n",monster_damage);
+			}
+			else{
+				curr_health = curr_health; 
+			}
+           
+        } else if (choice == 2) {//player runs generate new monster
+            printf("You run away from the monster.\n");
+            curr_monst_type=monster_genarate(monsters);
+            monster_health = monster_hp[curr_monst_type];//generate new monster
+        } else if (choice == 3){
+               stats();
+        } else {
+            printf("Invalid choice.\n");
+        }
+        if (monster_health <= 0){
+			monsters_defeated++;
+            xp = xp + monster_exp[curr_monst_type];
+            printf("You Killed the Monster!\n");
+            printf("You gained %d XP!\n",monster_exp[curr_monst_type]);
+            
+            if(xp >= exp_cap){
+                   printf("You Leveled Up!");
+                   levelup();
+                   curr_health = health;
+                   
+                   //dialog("damage +5 and Heath +10");
+                   sleep(5000);
+            }
+			
+            curr_monst_type=monster_genarate(monsters);
+            monster_health = monster_hp[curr_monst_type];//generate new monster
+		}
+    }
+    printf("You have been defeated. You defeated %d monsters before your demise.", monsters_defeated);
+    system("PAUSE");
+    return 0;
+}
+
+
+
+int max(int num1, int num2)
+{
+    return (num1 > num2 ) ? num1 : num2;
+}
